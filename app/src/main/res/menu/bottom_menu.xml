@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/chatFragment"
+        android:icon="@drawable/textsms_black_24dp"
+        android:title="Message" />
+    <item
+        android:id="@+id/groupFragment"
+        android:icon="@drawable/group_black_24dp"
+        android:title="Group" />
+    <item
+        android:id="@+id/frientsFragment"
+        android:icon="@drawable/portrait_black_24dp"
+        android:title="Friends" />
+
+    <item
+        android:id="@+id/notificationFragment"
+        android:icon="@drawable/baseline_notifications_none_black_24dp"
+        android:title="Notifications"/>
+</menu>

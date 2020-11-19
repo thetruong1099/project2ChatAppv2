@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "753552622368",
+    "firebase_url": "https://project2messageapp.firebaseio.com",
+    "project_id": "project2messageapp",
+    "storage_bucket": "project2messageapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:753552622368:android:5a86f95df2937eee0f0d45",
+        "android_client_info": {
+          "package_name": "com.example.project2chatappv2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "753552622368-oenuui6occ62nv7qu51h09joisfbk1i7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZR5hl9cfpAAXSPa47mdzH0hP8r_T7Nqg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "753552622368-oenuui6occ62nv7qu51h09joisfbk1i7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:753552622368:android:d478df05e5d44ef50f0d45",
+        "android_client_info": {
+          "package_name": "com.example.project2messageapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "753552622368-oenuui6occ62nv7qu51h09joisfbk1i7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZR5hl9cfpAAXSPa47mdzH0hP8r_T7Nqg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "753552622368-oenuui6occ62nv7qu51h09joisfbk1i7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
