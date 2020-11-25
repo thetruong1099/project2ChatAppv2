@@ -92,7 +92,6 @@ public class UserResponsitory {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listUsers.clear();
-
                 for (String id: listId){
                     for (DataSnapshot dataSnapshot: snapshot.getChildren()){
                         UserModel userModel = dataSnapshot.getValue(UserModel.class);

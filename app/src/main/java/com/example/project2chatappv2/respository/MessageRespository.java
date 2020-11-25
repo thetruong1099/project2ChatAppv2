@@ -79,7 +79,9 @@ public class MessageRespository {
                         listMess.add(messageModel);
                     }
                 }
-                listMessMutableLiveData.postValue(listMess);
+                if(listMess!=null){
+                    listMessMutableLiveData.postValue(listMess);
+                }
             }
 
             @Override

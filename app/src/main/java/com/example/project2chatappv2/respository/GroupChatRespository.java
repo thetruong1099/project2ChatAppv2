@@ -1,6 +1,10 @@
 package com.example.project2chatappv2.respository;
 
 import android.app.Application;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.net.Uri;
+import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -8,12 +12,18 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.project2chatappv2.model.GroupChatModel;
 import com.example.project2chatappv2.model.MessageModel;
 import com.example.project2chatappv2.model.UserModel;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.lang.reflect.Member;
 import java.util.ArrayList;
@@ -28,6 +38,9 @@ public class GroupChatRespository {
     private MutableLiveData<List<GroupChatModel>> listGroupMutableLiveData;
     private List<MessageModel> listMessage;
     private MutableLiveData<List<MessageModel>> listMessageMutableLiveData;
+    private MutableLiveData<GroupChatModel> groupChatModelMutableLiveData;
+
+    private StorageReference storageReference;
 
     public GroupChatRespository(Application application) {
         this.application = application;
@@ -37,6 +50,9 @@ public class GroupChatRespository {
         listGroupMutableLiveData = new MutableLiveData<>();
         listMessage = new ArrayList<>();
         listMessageMutableLiveData = new MutableLiveData<>();
+        groupChatModelMutableLiveData = new MutableLiveData<>();
+
+        storageReference = FirebaseStorage.getInstance().getReference("uploads");
     }
 
     public MutableLiveData<List<GroupChatModel>> getListGroupMutableLiveData() {
@@ -45,6 +61,10 @@ public class GroupChatRespository {
 
     public MutableLiveData<List<MessageModel>> getListMessageMutableLiveData() {
         return listMessageMutableLiveData;
+    }
+
+    public MutableLiveData<GroupChatModel> getGroupChatModelMutableLiveData() {
+        return groupChatModelMutableLiveData;
     }
 
     public void createGroup(String groupName, String myID, List<String> listId){
@@ -65,11 +85,13 @@ public class GroupChatRespository {
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()){
                     GroupChatModel groupChatModel = dataSnapshot.getValue(GroupChatModel.class);
                     ArrayList<String> listID = groupChatModel.getMember();
-                    for(String id: listID){
-                        if(id.equals(myID)){
-                            groupChatModel.setGroupID(dataSnapshot.getKey());
-                            groupChatModelList.add(groupChatModel);
-                            break;
+                    if (listID!=null){
+                        for(String id: listID){
+                            if(id.equals(myID)){
+                                groupChatModel.setGroupID(dataSnapshot.getKey());
+                                groupChatModelList.add(groupChatModel);
+                                break;
+                            }
                         }
                     }
                 }
@@ -110,5 +132,66 @@ public class GroupChatRespository {
 
             }
         });
+    }
+
+    private String getFIleExtension(Uri uri, Context context){
+        ContentResolver contentResolver = context.getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    public void uploadImage(Uri imageUri, final Context context, final String groupID){
+        if (imageUri != null){
+
+            final StorageReference fileReference = storageReference.child(String.valueOf(System.currentTimeMillis())+"."+getFIleExtension(imageUri, context));
+
+            UploadTask uploadTask = fileReference.putFile(imageUri);
+            Task<Uri> uriTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful() ){
+                        throw task.getException();
+                    }
+                    return fileReference.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()){
+                        Uri downloadUri = task.getResult();
+                        if (downloadUri!=null){
+                            String photoLink = downloadUri.toString();
+
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("imageURL", photoLink);
+                            databaseReference.child(groupID).updateChildren(map);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    public void getGroupChatProfile(String groupID){
+        databaseReference.child(groupID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                GroupChatModel groupChatModel = snapshot.getValue(GroupChatModel.class);
+                groupChatModelMutableLiveData.postValue(groupChatModel);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void updateGroupName(String groupID, String groupName){
+        databaseReference.child(groupID).child("groupName").setValue(groupName);
+    }
+
+    public void addMember(String groupID, List<String> listID){
+        databaseReference.child(groupID).child("member").setValue(listID);
     }
 }

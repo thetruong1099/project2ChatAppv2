@@ -91,9 +91,6 @@ public class GroupChatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(GroupChatActivity.this, GroupChatProfileActivity.class);
                 intent.putExtra("groupID", groupID);
-                intent.putExtra("groupName", groupName);
-                intent.putExtra("imageURL", imageURL);
-                intent.putStringArrayListExtra("member", listIDMember);
                 startActivity(intent);
                 finish();
             }

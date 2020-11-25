@@ -21,6 +21,7 @@ import com.example.project2chatappv2.adapter.AddMemberAdapter;
 import com.example.project2chatappv2.adapter.ChoseMemberAdapter;
 import com.example.project2chatappv2.adapter.SearchUserAdapter;
 import com.example.project2chatappv2.model.UserModel;
+import com.example.project2chatappv2.viewModel.GroupChatViewModel;
 import com.example.project2chatappv2.viewModel.MemberGroupChatViewModel;
 import com.example.project2chatappv2.viewModel.UserViewModel;
 
@@ -42,11 +43,14 @@ public class AddMemberActivity extends AppCompatActivity {
 
     private UserViewModel userViewModel;
     private MemberGroupChatViewModel memberGroupChatViewModel;
+    private GroupChatViewModel groupChatViewModel;
 
     private AddMemberAdapter addMemberAdapter;
     private ChoseMemberAdapter choseMemberAdapter;
 
     private List<UserModel> listUser;
+    private String groupID;
+    private List<String> listIDMember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,16 +72,26 @@ public class AddMemberActivity extends AppCompatActivity {
 
         intent = getIntent();
         status = intent.getBooleanExtra("status", false);
+        groupID = intent.getStringExtra("groupID");
+        listIDMember = intent.getStringArrayListExtra("listID");
         final String groupName = intent.getStringExtra("groupName");
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AddMemberActivity.this, AddGroupChatActivity.class);
-                intent.putExtra("groupName", groupName);
-                intent.putExtra("status", true);
-                startActivity(intent);
-                finish();
+                if (status == true){
+                    Intent intent = new Intent(AddMemberActivity.this, AddGroupChatActivity.class);
+                    intent.putExtra("groupName", groupName);
+                    intent.putExtra("status", true);
+                    startActivity(intent);
+                    finish();
+                }
+                else {
+                    Intent intent = new Intent(AddMemberActivity.this, GroupChatProfileActivity.class);
+                    intent.putExtra("groupID", groupID);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
 
@@ -114,7 +128,6 @@ public class AddMemberActivity extends AppCompatActivity {
                 memberGroupChatViewModel.getListMutableLiveData().observe(AddMemberActivity.this, new Observer<List<UserModel>>() {
                     @Override
                     public void onChanged(List<UserModel> userModels) {
-                        listUser.addAll(userModels);
                         choseMemberAdapter = new ChoseMemberAdapter(AddMemberActivity.this, listUser);
                         recyclerViewMember.setAdapter(choseMemberAdapter);
                         recyclerViewMember.setLayoutManager(new LinearLayoutManager(AddMemberActivity.this, LinearLayoutManager.HORIZONTAL, false));
@@ -152,6 +165,17 @@ public class AddMemberActivity extends AppCompatActivity {
                     intent.putStringArrayListExtra("listImage", listImage);
                     startActivity(intent);
                     finish();
+                }
+                else {
+                    listIDMember.addAll(listId);
+                    if (listIDMember.size()>0){
+                        groupChatViewModel = new ViewModelProvider(AddMemberActivity.this).get(GroupChatViewModel.class);
+                        groupChatViewModel.addMember(groupID, listIDMember);
+                        Intent intent = new Intent(AddMemberActivity.this, GroupChatProfileActivity.class);
+                        intent.putExtra("groupID", groupID);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             }
         });
