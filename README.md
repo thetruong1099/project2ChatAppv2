@@ -8,7 +8,7 @@ user tạo, chỉnh sửa profile.<br>
 Các thiết bị sử dụng từ Android 6.<br>
 Công nghệ sử dụng:<br>
 Firebase.<br>
-Thư viện UI: navigation, lottie.<br>
+Thư viện UI: material, lottie.<br>
 Demo:<br>
 ![image](https://user-images.githubusercontent.com/50746317/109242495-ce8a2500-780d-11eb-9f64-e17eb1b0b3dc.png)
 ![image](https://user-images.githubusercontent.com/50746317/109242530-dba71400-780d-11eb-9e19-d40b9095b9c6.png)
